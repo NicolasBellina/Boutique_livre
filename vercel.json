@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://qnrwnuzqfqrlpunvrmuo.supabase.co/rest/v1/:path*"
-    }
-  ]
-}

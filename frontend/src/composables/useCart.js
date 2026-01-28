@@ -11,9 +11,10 @@ export function useCart() {
     const existingItem = cart.value.find(item => item.id === book.id);
 
     if (existingItem) {
-      // Si le livre est déjà dans le panier, augmenter la quantité
-      if (existingItem.quantity < book.quantity) {
-        existingItem.quantity += 1;
+      // Si le livre est déjà dans le panier, augmenter la quantité (cartQuantity) si le stock le permet
+      existingItem.cartQuantity = existingItem.cartQuantity || 1;
+      if (existingItem.cartQuantity < (book.quantity ?? existingItem.quantity ?? Infinity)) {
+        existingItem.cartQuantity += 1;
       }
     } else {
       // Sinon, ajouter le livre au panier
@@ -62,7 +63,7 @@ export function useCart() {
    * Obtenir le nombre total d'articles
    */
   const totalItems = computed(() => {
-    return cart.value.reduce((total, item) => total + item.cartQuantity, 0);
+    return cart.value.reduce((total, item) => total + (item.cartQuantity || 0), 0);
   });
 
   /**
@@ -70,7 +71,7 @@ export function useCart() {
    */
   const cartTotal = computed(() => {
     return cart.value.reduce((total, item) => {
-      return total + item.price * item.cartQuantity;
+      return total + Number(item.price) * (item.cartQuantity || 0);
     }, 0);
   });
 

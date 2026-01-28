@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import booksRouter from './routes/books';
-import ordersRouter from './routes/orders';
-import eventsRouter from './routes/events';
-import errorHandler from './middlewares/errorHandler';
-import loggingMiddleware from './middlewares/logging';
+import booksRouter from './routes/books.js';
+import ordersRouter from './routes/orders.js';
+import eventsRouter from './routes/events.js';
+import errorHandler from './middlewares/errorHandler.js';
+import loggingMiddleware from './middlewares/logging.js';
 
 // Configuration
 dotenv.config();

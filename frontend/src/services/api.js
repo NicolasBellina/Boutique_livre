@@ -1,6 +1,8 @@
 import { getAccessToken } from '../lib/supabase'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || null;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || null;
 
 /**
  * Helper pour faire des requêtes HTTP
@@ -10,6 +12,8 @@ async function fetchAPI(endpoint, options = {}) {
   const defaultOptions = {
     headers: {
       'Content-Type': 'application/json',
+      // Fournir la clé publishable pour Supabase REST si définie
+      ...(SUPABASE_ANON_KEY ? { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } : {}),
     },
   };
 

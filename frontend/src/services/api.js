@@ -1,8 +1,9 @@
 import { getAccessToken } from '../lib/supabase'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// Si VITE_API_BASE_URL est défini (préféré), l'utiliser. Sinon utiliser Supabase REST v1 si VITE_SUPABASE_URL est disponible.
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || null;
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || null;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (SUPABASE_URL ? `${SUPABASE_URL}/rest/v1` : '/api');
 
 /**
  * Helper pour faire des requêtes HTTP

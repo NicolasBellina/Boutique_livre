@@ -1,6 +1,6 @@
 import { getAccessToken } from '../lib/supabase'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 /**
  * Helper pour faire des requêtes HTTP
@@ -22,14 +22,22 @@ async function fetchAPI(endpoint, options = {}) {
     };
   }
 
-  const response = await fetch(url, {
-    ...defaultOptions,
-    ...options,
-    headers: {
-      ...defaultOptions.headers,
-      ...options.headers,
-    },
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      ...defaultOptions,
+      ...options,
+      headers: {
+        ...defaultOptions.headers,
+        ...options.headers,
+      },
+    });
+  } catch (err) {
+    // Erreur réseau (CORS bloqué, DNS inconnu, serveur offline...)
+    const error = new Error(`Network error when fetching ${url}: ${err.message}`);
+    error.cause = err;
+    throw error;
+  }
 
   const data = await response.json();
 

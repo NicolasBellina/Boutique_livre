@@ -52,7 +52,9 @@ services:
       dockerfile: Dockerfile
     container_name: livre_frontend
     environment:
-      VITE_API_URL: http://localhost:3000
+      # Vite expects env vars prefixed with VITE_; the frontend code reads VITE_API_BASE_URL
+      # In Docker compose use the service hostname 'backend' so containers communicate internally
+      VITE_API_BASE_URL: http://backend:3000/api
     ports:
       - "5173:5173"
     volumes:

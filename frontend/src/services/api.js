@@ -1,3 +1,5 @@
+import { getAccessToken } from '../lib/supabase'
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 /**
@@ -10,6 +12,15 @@ async function fetchAPI(endpoint, options = {}) {
       'Content-Type': 'application/json',
     },
   };
+
+  // Récupérer token Supabase si connecté et l'ajouter aux headers
+  const token = await getAccessToken();
+  if (token) {
+    options.headers = {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${token}`,
+    };
+  }
 
   const response = await fetch(url, {
     ...defaultOptions,

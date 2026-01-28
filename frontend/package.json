@@ -1,0 +1,47 @@
+{
+  "name": "librairie-pro-frontend",
+  "version": "0.1.0",
+  "description": "Frontend for LibrairiePro - Library Management System",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/ tests/ --ext .js,.vue",
+    "lint:fix": "eslint src/ tests/ --ext .js,.vue --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [
+    "vue",
+    "library",
+    "book",
+    "frontend"
+  ],
+  "author": "ESGI M1",
+  "license": "MIT",
+  "dependencies": {
+    "vue": "^3.3.11"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.0",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "@vitest/ui": "^1.6.1",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^8.55.0",
+    "eslint-plugin-vue": "^9.19.2",
+    "happy-dom": "^12.10.3",
+    "prettier": "^3.1.1",
+    "vite": "^5.0.10",
+    "vitest": "^1.6.1"
+  },
+  "engines": {
+    "node": ">=16.14.0",
+    "npm": ">=7.0.0"
+  }
+}

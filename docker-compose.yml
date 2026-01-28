@@ -1,0 +1,75 @@
+services:
+  # 🗄️ Base de données PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: livre_postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: user
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - livre_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # 🔵 Backend Node.js/Express
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: livre_backend
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://root:root@postgres:5432/user
+      PORT: 3000
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/tests:/app/tests
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - livre_network
+    restart: unless-stopped
+    command: npm run dev
+
+  # 🟢 Frontend Vue.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: livre_frontend
+    environment:
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/tests:/app/tests
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - livre_network
+    restart: unless-stopped
+    command: npm run dev
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  livre_network:
+    driver: bridge

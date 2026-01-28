@@ -1,0 +1,87 @@
+# Git Ignore for LibrairiePro Project
+
+## Node.js
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+
+## Environment Variables
+.env
+.env.local
+.env.*.local
+
+## IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.sublime-project
+.sublime-workspace
+
+## Build & Dist
+dist/
+build/
+*.tsbuildinfo
+.next/
+out/
+
+## Testing
+coverage/
+.nyc_output/
+jest-coverage/
+.mocha
+test-results/
+playwright-report/
+
+## Database
+*.sqlite
+*.sqlite3
+database.db
+pgdata/
+postgres_data/
+
+## Temporary
+tmp/
+temp/
+*.log
+*.pid
+*.seed
+*.seed.js
+
+## OS
+.DS_Store
+.AppleDouble
+.LSOverride
+.Trashes
+.Spotlight-V100
+
+## Docker
+.dockerignore
+docker-compose.override.yml
+
+## Prisma
+prisma/migrations/*
+!prisma/migrations/.gitkeep
+.env.*.local
+
+## Frontend specific
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/.nuxt/
+
+## Backend specific
+backend/dist/
+backend/build/
+backend/.tsc-out/
+
+## Certificates
+*.pem
+*.key
+*.crt

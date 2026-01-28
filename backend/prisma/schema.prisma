@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// BOOKS - Catalogue de livres
+// ============================================================================
+model Book {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  author      String    @db.VarChar(255)
+  year        Int?
+  isbn        String    @unique @db.VarChar(13)
+  quantity    Int       @default(0)
+  price       Decimal   @db.Decimal(10, 2)
+  description String?   @db.Text
+  isArchived  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  orderItems  OrderItem[]
+
+  // Indices pour recherches rapides
+  @@index([title])
+  @@index([author])
+  @@index([year])
+  @@index([isArchived])
+}
+
+// ============================================================================
+// ORDERS - Commandes
+// ============================================================================
+model Order {
+  id               Int       @id @default(autoincrement())
+  orderNumber      String    @unique
+  status           String    @default("confirmed") // pending|confirmed|cancelled
+  total            Decimal   @default(0) @db.Decimal(12, 2)
+  customerEmail    String?   @db.VarChar(255)
+  customerName     String?   @db.VarChar(255)
+  shippingAddress  String?   @db.Text
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  items            OrderItem[]
+
+  // Indices
+  @@index([status])
+  @@index([customerEmail])
+  @@index([createdAt])
+  @@index([orderNumber])
+}
+
+// ============================================================================
+// ORDER_ITEMS - Détails des commandes (relation N:N avec Books)
+// ============================================================================
+model OrderItem {
+  id        Int       @id @default(autoincrement())
+  orderId   Int
+  bookId    Int
+  quantity  Int       @default(1)
+  unitPrice Decimal   @db.Decimal(10, 2)
+  subtotal  Decimal   @db.Decimal(12, 2)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relations
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  book      Book      @relation(fields: [bookId], references: [id], onDelete: Restrict)
+
+  // Un livre ne peut apparaître qu'une fois par commande
+  @@unique([orderId, bookId])
+  @@index([orderId])
+  @@index([bookId])
+}
+
+// ============================================================================
+// EVENTS - Événements
+// ============================================================================
+model Event {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  date        DateTime
+  location    String?   @db.VarChar(255)
+  description String?   @db.Text
+  capacity    Int?
+  status      String    @default("planned") // planned|ongoing|closed|cancelled
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Indices
+  @@index([date])
+  @@index([status])
+  @@index([name])
+}

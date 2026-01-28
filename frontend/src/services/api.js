@@ -39,10 +39,31 @@ async function fetchAPI(endpoint, options = {}) {
     throw error;
   }
 
-  const data = await response.json();
+  // Lire la réponse en fonction du Content-Type pour éviter les erreurs de parsing JSON
+  const contentType = (response.headers.get('content-type') || '').toLowerCase();
+  let data;
+  try {
+    if (contentType.includes('application/json')) {
+      // tentative normale pour JSON
+      data = await response.json();
+    } else {
+      // fallback : lire en texte (utile si le serveur renvoie une page HTML d'erreur)
+      data = await response.text();
+    }
+  } catch (parseErr) {
+    // Erreur lors du parsing JSON (contenu invalide)
+    const text = await response.text().catch(() => null);
+    const error = new Error(`Invalid JSON response from ${url}`);
+    error.statusCode = response.status;
+    error.data = text ?? String(parseErr.message);
+    throw error;
+  }
 
   if (!response.ok) {
-    const error = new Error(data.error || 'API Error');
+    const message = (data && typeof data === 'object' && (data.error || data.message)) ||
+      (typeof data === 'string' && data) ||
+      `API Error ${response.status} ${response.statusText}`;
+    const error = new Error(message);
     error.statusCode = response.status;
     error.data = data;
     throw error;
